@@ -5,8 +5,25 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     Title="Home">
 
-    <VerticalStackLayout Padding="20" Spacing="14">
-        <Label Text="GameVault" FontSize="30" FontAttributes="Bold" />
-        <Label Text="Find games and save the ones I like." />
-    </VerticalStackLayout>
+    <ScrollView>
+        <VerticalStackLayout Padding="20" Spacing="16">
+            <Label Text="GameVault" FontSize="30" FontAttributes="Bold" />
+            <Label Text="Popular Games" FontSize="24" FontAttributes="Bold" />
+
+            <CollectionView ItemsSource="{Binding PopularGames}">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Border Padding="10" Margin="0,0,0,10">
+                            <VerticalStackLayout>
+                                <Label Text="{Binding Title}" FontAttributes="Bold" />
+                                <Label Text="{Binding Genre}" />
+                                <Label Text="{Binding Platform}" />
+                                <Label Text="{Binding Rating, StringFormat='Rating: {0}/5'}" />
+                            </VerticalStackLayout>
+                        </Border>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </VerticalStackLayout>
+    </ScrollView>
 </ContentPage>
