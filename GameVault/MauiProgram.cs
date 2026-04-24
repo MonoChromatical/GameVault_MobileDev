@@ -19,6 +19,7 @@ namespace GameVault
                 });
 
             builder.Services.AddTransient<HomePage>();
+            builder.Services.AddTransient<DiscoverPage>();
 
             builder.Services.AddTransient<HomeViewModel>();
 
