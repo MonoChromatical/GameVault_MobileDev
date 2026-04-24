@@ -22,6 +22,7 @@ namespace GameVault
             builder.Services.AddTransient<DiscoverPage>();
 
             builder.Services.AddTransient<HomeViewModel>();
+            builder.Services.AddTransient<DiscoverViewModel>();
 
 #if DEBUG
             builder.Logging.AddDebug();
