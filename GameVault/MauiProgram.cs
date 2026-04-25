@@ -1,6 +1,7 @@
 ﻿using GameVault.Views;
 using Microsoft.Extensions.Logging;
 using GameVault.ViewModels;
+using GameVault.Services;
 
 namespace GameVault
 {
@@ -23,6 +24,8 @@ namespace GameVault
 
             builder.Services.AddTransient<HomeViewModel>();
             builder.Services.AddTransient<DiscoverViewModel>();
+
+            builder.Services.AddSingleton<RawgGameService>();
 
 #if DEBUG
             builder.Logging.AddDebug();
