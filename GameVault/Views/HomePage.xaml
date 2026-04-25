@@ -9,6 +9,7 @@
         <VerticalStackLayout Padding="20" Spacing="16">
             <Label Text="GameVault" FontSize="30" FontAttributes="Bold" />
             <Label Text="Popular Games" FontSize="24" FontAttributes="Bold" />
+            <Button Text="Test API Load" Clicked="TestApiLoad_Clicked" />
 
             <CollectionView ItemsSource="{Binding PopularGames}">
                 <CollectionView.ItemTemplate>
