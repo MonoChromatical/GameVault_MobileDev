@@ -143,6 +143,104 @@ namespace GameVault.Services
             }
         }
 
+        public async Task<List<FilterOption>> GetGenreOptionsAsync()
+        {
+            // FLOW:
+            // DiscoverViewModel asks for genres.
+            // RawgGameService calls RAWG /genres.
+            // RAWG returns names and slugs.
+            // The app uses slugs in search URLs.
+
+            if (RawgApiSettings.HasApiKey == false)
+            {
+                return GetSampleGenreOptions();
+            }
+
+            try
+            {
+                string url = RawgApiSettings.BaseUrl + "/genres?key=" + RawgApiSettings.ApiKey + "&page_size=40";
+                string json = await httpClient.GetStringAsync(url);
+
+                RawgFilterListResponse? response = JsonSerializer.Deserialize<RawgFilterListResponse>(json, jsonOptions);
+
+                if (response == null || response.Results == null)
+                {
+                    return GetSampleGenreOptions();
+                }
+
+                List<FilterOption> options = new List<FilterOption>();
+
+                FilterOption allOption = new FilterOption();
+                allOption.Name = "All";
+                allOption.Value = string.Empty;
+                options.Add(allOption);
+
+                foreach (RawgFilterItem item in response.Results)
+                {
+                    FilterOption option = new FilterOption();
+                    option.Name = item.Name ?? "Unknown";
+                    option.Value = item.Slug ?? string.Empty;
+
+                    options.Add(option);
+                }
+
+                return options;
+            }
+            catch
+            {
+                return GetSampleGenreOptions();
+            }
+        }
+
+        public async Task<List<FilterOption>> GetPlatformOptionsAsync()
+        {
+            // FLOW:
+            // DiscoverViewModel asks for platform groups.
+            // RawgGameService calls RAWG /platforms/lists/parents.
+            // RAWG returns parent platform names and IDs.
+            // The app uses IDs in search URLs.
+
+            if (RawgApiSettings.HasApiKey == false)
+            {
+                return GetSamplePlatformOptions();
+            }
+
+            try
+            {
+                string url = RawgApiSettings.BaseUrl + "/platforms/lists/parents?key=" + RawgApiSettings.ApiKey;
+                string json = await httpClient.GetStringAsync(url);
+
+                RawgFilterListResponse? response = JsonSerializer.Deserialize<RawgFilterListResponse>(json, jsonOptions);
+
+                if (response == null || response.Results == null)
+                {
+                    return GetSamplePlatformOptions();
+                }
+
+                List<FilterOption> options = new List<FilterOption>();
+
+                FilterOption allOption = new FilterOption();
+                allOption.Name = "All";
+                allOption.Value = string.Empty;
+                options.Add(allOption);
+
+                foreach (RawgFilterItem item in response.Results)
+                {
+                    FilterOption option = new FilterOption();
+                    option.Name = item.Name ?? "Unknown";
+                    option.Value = item.Id.ToString();
+
+                    options.Add(option);
+                }
+
+                return options;
+            }
+            catch
+            {
+                return GetSamplePlatformOptions();
+            }
+        }
+
         private Game ConvertRawgGame(RawgGame rawgGame)
         {
             Game game = new Game();
@@ -213,6 +311,62 @@ namespace GameVault.Services
             return string.Join(", ", platformNames);
         }
 
+        private List<FilterOption> GetSampleGenreOptions()
+        {
+            // FLOW:
+            // If RAWG cannot load genres, the app still shows basic picker options.
+            // The second value is the RAWG genre slug used in search URLs.
+            List<FilterOption> options = new List<FilterOption>();
+
+            string[,] sampleGenres =
+            {
+                { "All", string.Empty },
+                { "Action", "action" },
+                { "RPG", "role-playing-games-rpg" },
+                { "Adventure", "adventure" }
+            };
+
+            for (int index = 0; index < sampleGenres.GetLength(0); index++)
+            {
+                FilterOption option = new FilterOption();
+                option.Name = sampleGenres[index, 0];
+                option.Value = sampleGenres[index, 1];
+
+                options.Add(option);
+            }
+
+            return options;
+        }
+
+        private List<FilterOption> GetSamplePlatformOptions()
+        {
+            // FLOW:
+            // If RAWG cannot load platform groups, the app still shows basic picker options.
+            // The second value is the RAWG parent_platforms id used in search URLs.
+            List<FilterOption> options = new List<FilterOption>();
+
+            string[,] samplePlatforms =
+            {
+                { "All", string.Empty },
+                { "PC", "1" },
+                { "PlayStation", "2" },
+                { "Xbox", "3" },
+                { "Nintendo", "7" }
+            };
+
+            for (int index = 0; index < samplePlatforms.GetLength(0); index++)
+            {
+                FilterOption option = new FilterOption();
+                option.Name = samplePlatforms[index, 0];
+                option.Value = samplePlatforms[index, 1];
+
+                options.Add(option);
+            }
+
+            return options;
+        }
+
+
         private List<Game> GetSampleGames()
         {
             List<Game> games = new List<Game>();
@@ -270,5 +424,22 @@ namespace GameVault.Services
             public RawgNamedItem? Platform { get; set; }
         }
 
+        private class RawgFilterListResponse
+        {
+            [JsonPropertyName("results")]
+            public List<RawgFilterItem>? Results { get; set; }
+        }
+
+        private class RawgFilterItem
+        {
+            [JsonPropertyName("id")]
+            public int Id { get; set; }
+
+            [JsonPropertyName("name")]
+            public string? Name { get; set; }
+
+            [JsonPropertyName("slug")]
+            public string? Slug { get; set; }
+        }
     }
 }
