@@ -21,6 +21,16 @@ namespace GameVault.Services
         {
             PropertyNameCaseInsensitive = true
         };
+
+        // These words are used by the adult content filter.
+
+        private readonly List<string> adultFilterKeywords = new List<string>
+        {
+            "adult",
+            "hentai",
+            "sexual"
+        };
+
         public RawgGameService()
         {
             httpClient.DefaultRequestHeaders.UserAgent.ParseAdd("GameVault-Ver1");
@@ -55,7 +65,74 @@ namespace GameVault.Services
                 foreach (RawgGame rawgGame in response.Results)
                 {
                     Game game = ConvertRawgGame(rawgGame);
-                    games.Add(game);
+                    
+                    if (ShouldShowGame(game) == true)
+                    {
+                        games.Add(game);
+                    }
+                }
+
+                return games;
+            }
+            catch
+            {
+                return GetSampleGames();
+            }
+        }
+
+        public async Task<List<Game>> SearchGamesAsync(string searchText, FilterOption? selectedGenre, FilterOption? selectedPlatform)
+        {
+            // FLOW:
+            // DiscoverViewModel sends the user's search text, genre, and platform here.
+            // RawgGameService builds a RAWG API URL.
+            // RAWG returns matching games.
+            // The JSON is converted into Game objects for the Discover page.
+
+            if (RawgApiSettings.HasApiKey == false)
+            {
+                return GetSampleGames();
+            }
+
+            try
+            {
+                string url = RawgApiSettings.BaseUrl + "/games?key=" + RawgApiSettings.ApiKey + "&page_size=20";
+
+                if (string.IsNullOrWhiteSpace(searchText) == false)
+                {
+                    // Escape the search text so spaces and special characters are safe in the URL.
+                    string safeSearchText = Uri.EscapeDataString(searchText);
+                    url = url + "&search=" + safeSearchText;
+                }
+
+                if (selectedGenre != null && string.IsNullOrWhiteSpace(selectedGenre.Value) == false)
+                {
+                    url = url + "&genres=" + selectedGenre.Value;
+                }
+
+                if (selectedPlatform != null && string.IsNullOrWhiteSpace(selectedPlatform.Value) == false)
+                {
+                    url = url + "&parent_platforms=" + selectedPlatform.Value;
+                }
+
+                string json = await httpClient.GetStringAsync(url);
+
+                RawgGameListResponse? response = JsonSerializer.Deserialize<RawgGameListResponse>(json, jsonOptions);
+
+                if (response == null || response.Results == null)
+                {
+                    return GetSampleGames();
+                }
+
+                List<Game> games = new List<Game>();
+
+                foreach (RawgGame rawgGame in response.Results)
+                {
+                    Game game = ConvertRawgGame(rawgGame);
+
+                    if (ShouldShowGame(game) == true)
+                    {
+                        games.Add(game);
+                    }
                 }
 
                 return games;
@@ -80,6 +157,22 @@ namespace GameVault.Services
 
             return game;
         }
+
+        private bool ShouldShowGame(Game game)
+        {
+            string filterText = game.Title + " " + game.Genre;
+
+            foreach (string keyword in adultFilterKeywords)
+            {
+                if (filterText.Contains(keyword, StringComparison.OrdinalIgnoreCase))
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
         private string GetGenreText(RawgGame rawgGame)
         {
             if (rawgGame.Genres == null || rawgGame.Genres.Count == 0)

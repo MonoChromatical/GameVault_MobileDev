@@ -7,7 +7,22 @@
 
     <VerticalStackLayout Padding="20" Spacing="14">
         <Label Text="Discover Games" FontSize="30" FontAttributes="Bold" />
-        <SearchBar Placeholder="Search for a game..." />
-        <Button Text="Search" />
+        <SearchBar x:Name="SearchBox" Placeholder="Search for a game..." />
+        <Button Text="Test Search" Clicked="TestSearch_Clicked" />
+        <Label x:Name="SearchResultLabel" Text="No search yet." />
+
+        <CollectionView x:Name="SearchResultsList">
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Border Padding="10" Margin="0,0,0,10">
+                        <VerticalStackLayout>
+                            <Label Text="{Binding Title}" FontAttributes="Bold" />
+                            <Label Text="{Binding Genre}" />
+                            <Label Text="{Binding Platform}" />
+                        </VerticalStackLayout>
+                    </Border>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
     </VerticalStackLayout>
 </ContentPage>
