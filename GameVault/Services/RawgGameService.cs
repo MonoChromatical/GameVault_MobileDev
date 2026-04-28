@@ -241,6 +241,39 @@ namespace GameVault.Services
             }
         }
 
+        public async Task<string> GetGameDescriptionAsync(int gameId)
+        {
+            // FLOW:
+            // GameDetailsPage sends the selected game's RAWG Id here.
+            // RawgGameService calls RAWG /games/{id}.
+            // RAWG returns description_raw.
+            // GameDetailsPage displays that description.
+
+            if (RawgApiSettings.HasApiKey == false)
+            {
+                return "Sample description is shown until a RAWG API key is added.";
+            }
+
+            try
+            {
+                string url = RawgApiSettings.BaseUrl + "/games/" + gameId + "?key=" + RawgApiSettings.ApiKey;
+                string json = await httpClient.GetStringAsync(url);
+
+                RawgGameDetailsResponse? response = JsonSerializer.Deserialize<RawgGameDetailsResponse>(json, jsonOptions);
+
+                if (response == null || string.IsNullOrWhiteSpace(response.DescriptionRaw))
+                {
+                    return "No description available for this game.";
+                }
+
+                return response.DescriptionRaw;
+            }
+            catch
+            {
+                return "No description available for this game.";
+            }
+        }
+
         private Game ConvertRawgGame(RawgGame rawgGame)
         {
             Game game = new Game();
@@ -389,6 +422,12 @@ namespace GameVault.Services
         {
             [JsonPropertyName("results")]
             public List<RawgGame>? Results { get; set; }
+        }
+
+        private class RawgGameDetailsResponse
+        {
+            [JsonPropertyName("description_raw")]
+            public string? DescriptionRaw { get; set; }
         }
 
         private class RawgGame
