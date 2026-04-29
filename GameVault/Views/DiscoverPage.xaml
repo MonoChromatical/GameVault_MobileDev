@@ -5,13 +5,48 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     Title="Discover Games">
 
-    <VerticalStackLayout Padding="20" Spacing="14">
-        <Label Text="Discover Games" FontSize="30" FontAttributes="Bold" />
-        <SearchBar x:Name="SearchBox" Placeholder="Search for a game..." />
-        <Button Text="Test Search" Clicked="TestSearch_Clicked" />
-        <Label x:Name="SearchResultLabel" Text="No search yet." />
+    <Grid
+        Padding="20"
+        RowDefinitions="Auto,Auto,*"
+        ColumnDefinitions="*"
+        RowSpacing="16"
+        ColumnSpacing="18">
 
-        <CollectionView x:Name="SearchResultsList">
+        <VerticalStackLayout Grid.Row="0" Grid.Column="0" Spacing="16">
+            <Label Text="Discover Games" FontSize="30" FontAttributes="Bold" />
+
+            <SearchBar Placeholder="Search for a game..." Text="{Binding SearchText}" />
+
+            <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+                <Picker
+                    Title="Genre"
+                    ItemsSource="{Binding GenreOptions}"
+                    ItemDisplayBinding="{Binding Name}"
+                    SelectedItem="{Binding SelectedGenre}" />
+
+                <Picker
+                    Grid.Column="1"
+                    Title="Platform"
+                    ItemsSource="{Binding PlatformOptions}"
+                    ItemDisplayBinding="{Binding Name}"
+                    SelectedItem="{Binding SelectedPlatform}" />
+            </Grid>
+
+            <Button Text="Search" Clicked="Search_Clicked" />
+            <Label Text="{Binding Message}" />
+        </VerticalStackLayout>
+
+        <Label
+            Grid.Row="1"
+            Grid.Column="0"
+            Text="Results"
+            FontSize="24"
+            FontAttributes="Bold" />
+
+        <CollectionView
+            Grid.Row="2"
+            Grid.Column="0"
+            ItemsSource="{Binding FilteredGames}">
             <CollectionView.ItemTemplate>
                 <DataTemplate>
                     <Border Padding="10" Margin="0,0,0,10">
@@ -19,10 +54,11 @@
                             <Label Text="{Binding Title}" FontAttributes="Bold" />
                             <Label Text="{Binding Genre}" />
                             <Label Text="{Binding Platform}" />
+                            <Label Text="{Binding Rating, StringFormat='Rating: {0}/5'}" />
                         </VerticalStackLayout>
                     </Border>
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>
-    </VerticalStackLayout>
+    </Grid>
 </ContentPage>
