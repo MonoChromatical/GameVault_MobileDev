@@ -6,12 +6,42 @@
     Title="Home">
 
     <ScrollView>
-        <VerticalStackLayout Padding="20" Spacing="16">
-            <Label Text="GameVault" FontSize="30" FontAttributes="Bold" />
-            <Label Text="Popular Games" FontSize="24" FontAttributes="Bold" />
-            <Button Text="Test API Load" Clicked="TestApiLoad_Clicked" />
+        <Grid
+            Padding="20"
+            RowDefinitions="Auto,Auto,Auto,Auto,Auto"
+            ColumnDefinitions="*"
+            RowSpacing="22"
+            ColumnSpacing="18">
 
-            <CollectionView ItemsSource="{Binding PopularGames}">
+            <VerticalStackLayout Grid.Row="0" Grid.Column="0" Spacing="6">
+                <Label Text="Welcome Back" FontSize="30" FontAttributes="Bold" />
+                <Label Text="Discover your next game." />
+            </VerticalStackLayout>
+
+            <Border Grid.Row="1" Grid.Column="0" Padding="16">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="4" />
+                </Border.StrokeShape>
+                <VerticalStackLayout Spacing="12">
+                    <Label Text="Featured Game" FontSize="24" FontAttributes="Bold" />
+                    <Label Text="{Binding FeaturedGame.Title}" FontSize="20" FontAttributes="Bold" />
+                    <Label Text="{Binding FeaturedGame.Genre}" />
+                    <Label Text="{Binding FeaturedGame.Platform}" />
+                    <Label Text="{Binding FeaturedGame.Rating, StringFormat='Rating: {0}/5'}" />
+                </VerticalStackLayout>
+            </Border>
+
+            <Label
+                Grid.Row="2"
+                Grid.Column="0"
+                Text="Popular Games"
+                FontSize="24"
+                FontAttributes="Bold" />
+
+            <CollectionView
+                Grid.Row="3"
+                Grid.Column="0"
+                ItemsSource="{Binding PopularGames}">
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
                         <Border Padding="10" Margin="0,0,0,10">
@@ -19,12 +49,17 @@
                                 <Label Text="{Binding Title}" FontAttributes="Bold" />
                                 <Label Text="{Binding Genre}" />
                                 <Label Text="{Binding Platform}" />
-                                <Label Text="{Binding Rating, StringFormat='Rating: {0}/5'}" />
                             </VerticalStackLayout>
                         </Border>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
             </CollectionView>
-        </VerticalStackLayout>
+
+            <Button
+                Grid.Row="4"
+                Grid.Column="0"
+                Text="Browse Games"
+                Clicked="BrowseGames_Clicked" />
+        </Grid>
     </ScrollView>
 </ContentPage>
