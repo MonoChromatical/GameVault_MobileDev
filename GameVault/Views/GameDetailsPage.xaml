@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="GameVault.Views.GameDetailsPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    Title="Game Details">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="20" Spacing="16">
+            <Label Text="{Binding SelectedGame.Title}" FontSize="30" FontAttributes="Bold" />
+            <Label Text="{Binding SelectedGame.Genre}" />
+            <Label Text="{Binding SelectedGame.Platform}" />
+            <Label Text="{Binding SelectedGame.Rating, StringFormat='Rating: {0}/5'}" />
+
+            <Label Text="About This Game" FontSize="24" FontAttributes="Bold" />
+            <Label Text="{Binding SelectedGame.Description}" />
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>
