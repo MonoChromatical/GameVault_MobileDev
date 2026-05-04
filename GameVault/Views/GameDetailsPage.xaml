@@ -6,14 +6,45 @@
     Title="Game Details">
 
     <ScrollView>
-        <VerticalStackLayout Padding="20" Spacing="16">
-            <Label Text="{Binding SelectedGame.Title}" FontSize="30" FontAttributes="Bold" />
-            <Label Text="{Binding SelectedGame.Genre}" />
-            <Label Text="{Binding SelectedGame.Platform}" />
-            <Label Text="{Binding SelectedGame.Rating, StringFormat='Rating: {0}/5'}" />
+        <Grid
+            Padding="20"
+            RowDefinitions="Auto,Auto,Auto"
+            ColumnDefinitions="*"
+            RowSpacing="16"
+            ColumnSpacing="18">
 
-            <Label Text="About This Game" FontSize="24" FontAttributes="Bold" />
-            <Label Text="{Binding SelectedGame.Description}" />
-        </VerticalStackLayout>
+            <VerticalStackLayout Grid.Row="0" Grid.Column="0" Spacing="16">
+                <Label Text="{Binding SelectedGame.Title}" FontSize="30" FontAttributes="Bold" />
+                <Label Text="{Binding SelectedGame.Genre}" />
+                <Label Text="{Binding SelectedGame.Platform}" />
+                <Label Text="{Binding SelectedGame.Rating, StringFormat='Rating: {0}/5'}" />
+
+                <Label Text="About This Game" FontSize="24" FontAttributes="Bold" />
+                <Label Text="{Binding SelectedGame.Description}" />
+            </VerticalStackLayout>
+
+            <VerticalStackLayout Grid.Row="1" Grid.Column="0" Spacing="16">
+                <Button Text="Add To Library" Clicked="AddToLibrary_Clicked" />
+
+                <Label Text="Status" FontSize="24" FontAttributes="Bold" />
+                <Picker x:Name="StatusPicker" Title="Choose status">
+                    <Picker.Items>
+                        <x:String>Playing</x:String>
+                        <x:String>Completed</x:String>
+                        <x:String>Wishlist</x:String>
+                        <x:String>Dropped</x:String>
+                    </Picker.Items>
+                </Picker>
+
+                <Label Text="Your Rating" FontSize="24" FontAttributes="Bold" />
+                <Slider x:Name="RatingSlider" Minimum="0" Maximum="10" ValueChanged="RatingSlider_ValueChanged" />
+                <Label x:Name="RatingOutputLabel" Text="Rating: 0/10" />
+
+                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
+                </Grid>
+
+                <Label x:Name="SaveOutputLabel" Text="" />
+            </VerticalStackLayout>
+        </Grid>
     </ScrollView>
 </ContentPage>
