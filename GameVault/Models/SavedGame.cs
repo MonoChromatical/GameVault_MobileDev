@@ -1,15 +1,20 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using SQLite;
 
 namespace GameVault.Models
 {
     // FLOW:
-    // GameDetailsPage creates a SavedGame when the user adds a game to the library.
-    // SavedGameDatabaseService will store SavedGame objects in SQLite later.
+    // GameDetailsPage will create a SavedGame when the user adds a game to the library.
+    // SavedGameDatabaseService will store SavedGame objects in SQLite.
     // LibraryViewModel will load them back and show them on the Profile / Library page.
     public class SavedGame : Game
     {
+        // SQLite uses this as the local database row Id, separate from the RAWG API Id.
+        [PrimaryKey, AutoIncrement]
+        public new int Id { get; set; }
+
         // Status stores the user's progress for this game.
         public string Status { get; set; } = "Playing";
 

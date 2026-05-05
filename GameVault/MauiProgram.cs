@@ -25,6 +25,8 @@ namespace GameVault
 
             builder.Services.AddSingleton<SelectedGameService>();
 
+            builder.Services.AddSingleton<SavedGameDatabaseService>();
+
             builder.Services.AddTransient<HomeViewModel>();
             builder.Services.AddTransient<DiscoverViewModel>();
 
