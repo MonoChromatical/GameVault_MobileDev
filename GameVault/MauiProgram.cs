@@ -22,6 +22,7 @@ namespace GameVault
             builder.Services.AddTransient<HomePage>();
             builder.Services.AddTransient<DiscoverPage>();
             builder.Services.AddTransient<GameDetailsPage>();
+            builder.Services.AddTransient<LibraryPage>();
 
             builder.Services.AddSingleton<SelectedGameService>();
 
@@ -29,6 +30,7 @@ namespace GameVault
 
             builder.Services.AddTransient<HomeViewModel>();
             builder.Services.AddTransient<DiscoverViewModel>();
+            builder.Services.AddTransient<LibraryViewModel>();
 
             builder.Services.AddSingleton<RawgGameService>();
 

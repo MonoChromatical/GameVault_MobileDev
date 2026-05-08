@@ -11,4 +11,7 @@
     <FlyoutItem Title="Discover Games" Route="discover">
         <ShellContent ContentTemplate="{DataTemplate views:DiscoverPage}" />
     </FlyoutItem>
+    <FlyoutItem Title="Profile / Library" Route="library">
+        <ShellContent ContentTemplate="{DataTemplate views:LibraryPage}" />
+    </FlyoutItem>
 </Shell>

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="GameVault.Views.LibraryPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    Title="Profile / Library">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="20" Spacing="18">
+            <Label Text="My Profile" FontSize="30" FontAttributes="Bold" />
+
+            <Border Padding="14">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="4" />
+                </Border.StrokeShape>
+                <VerticalStackLayout Spacing="8">
+                    <Label Text="Username: Player1" />
+                    <Label Text="Saved games will show here." />
+                </VerticalStackLayout>
+            </Border>
+
+            <Label Text="Recent Library Updates" FontSize="24" FontAttributes="Bold" />
+            <Label Text="{Binding Message}" />
+
+            <CollectionView ItemsSource="{Binding SavedGames}">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Border Padding="10" Margin="0,0,0,10">
+                            <VerticalStackLayout>
+                                <Label Text="{Binding Title}" FontAttributes="Bold" />
+                                <Label Text="{Binding Status}" />
+                                <Label Text="{Binding Platform}" />
+                                <Label Text="{Binding PersonalRating, StringFormat='Your Rating: {0}/10'}" />
+                            </VerticalStackLayout>
+                        </Border>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>
