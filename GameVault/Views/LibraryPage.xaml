@@ -15,13 +15,30 @@
                 </Border.StrokeShape>
                 <VerticalStackLayout Spacing="8">
                     <Label Text="Username: Player1" />
-                    <Label Text="Saved games will show here." />
+                    <Label Text="{Binding TotalGames, StringFormat='Total Games: {0}'}" />
+                    <Label Text="{Binding AverageRating, StringFormat='Average Rating: {0:F1}'}" />
                 </VerticalStackLayout>
             </Border>
 
+            <Label Text="Library Statistics" FontSize="24" FontAttributes="Bold" />
+            <!--
+                FLOW:
+                LibraryViewModel calculates these values from SavedGames.
+                When LoadLibraryAsync refreshes the list, these labels update.
+            -->
+            <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto" ColumnSpacing="12" RowSpacing="8">
+                <Label Text="{Binding PlayingCount, StringFormat='Playing: {0}'}" />
+                <Label Grid.Column="1" Text="{Binding CompletedCount, StringFormat='Completed: {0}'}" />
+                <Label Grid.Row="1" Text="{Binding WishlistCount, StringFormat='Wishlist: {0}'}" />
+                <Label Grid.Row="1" Grid.Column="1" Text="{Binding DroppedCount, StringFormat='Dropped: {0}'}" />
+            </Grid>
             <Label Text="Recent Library Updates" FontSize="24" FontAttributes="Bold" />
             <Label Text="{Binding Message}" />
-
+            <!--
+                FLOW:
+                LibraryViewModel.SavedGames contains SavedGame objects loaded from SQLite.
+                CollectionView repeats this template once for each saved game.
+            -->
             <CollectionView ItemsSource="{Binding SavedGames}">
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
