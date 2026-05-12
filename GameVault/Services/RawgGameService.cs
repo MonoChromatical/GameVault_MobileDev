@@ -291,6 +291,11 @@ namespace GameVault.Services
 
         private bool ShouldShowGame(Game game)
         {
+            if (UserSettings.ShowAdultContent == true)
+            {
+                return true;
+            }
+
             string filterText = game.Title + " " + game.Genre;
 
             foreach (string keyword in adultFilterKeywords)

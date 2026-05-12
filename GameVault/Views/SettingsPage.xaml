@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="GameVault.Views.SettingsPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    Title="Settings">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="20" Spacing="18">
+            <Label Text="Settings" FontSize="30" FontAttributes="Bold" />
+
+            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
+                <Label Text="Show Adult Content" VerticalOptions="Center" />
+                <Switch
+                    x:Name="AdultContentSwitch"
+                    Grid.Column="1"
+                    Toggled="AdultContentSwitch_Toggled" />
+            </Grid>
+
+            <Label x:Name="SettingsOutputLabel" Text="Settings loaded." />
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

@@ -14,4 +14,7 @@
     <FlyoutItem Title="Profile / Library" Route="library">
         <ShellContent ContentTemplate="{DataTemplate views:LibraryPage}" />
     </FlyoutItem>
+    <FlyoutItem Title="Settings" Route="settings">
+        <ShellContent ContentTemplate="{DataTemplate views:SettingsPage}" />
+    </FlyoutItem>
 </Shell>
