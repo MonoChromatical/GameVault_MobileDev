@@ -1,4 +1,4 @@
-﻿using GameVault.Views;
+using GameVault.Views;
 using Microsoft.Extensions.Logging;
 using GameVault.ViewModels;
 using GameVault.Services;
@@ -26,8 +26,8 @@ namespace GameVault
             builder.Services.AddTransient<SettingsPage>();
 
             builder.Services.AddSingleton<SelectedGameService>();
-
             builder.Services.AddSingleton<SavedGameDatabaseService>();
+            builder.Services.AddSingleton<OrientationService>();
 
             builder.Services.AddTransient<HomeViewModel>();
             builder.Services.AddTransient<DiscoverViewModel>();

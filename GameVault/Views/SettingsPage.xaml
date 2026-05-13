@@ -17,6 +17,14 @@
                     Toggled="AdultContentSwitch_Toggled" />
             </Grid>
 
+            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
+                <Label Text="Lock Portrait View" VerticalOptions="Center" />
+                <Switch
+                    x:Name="PortraitLockSwitch"
+                    Grid.Column="1"
+                    Toggled="PortraitLockSwitch_Toggled" />
+            </Grid>
+
             <Label x:Name="SettingsOutputLabel" Text="Settings loaded." />
         </VerticalStackLayout>
     </ScrollView>
