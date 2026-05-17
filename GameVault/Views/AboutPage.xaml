@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="GameVault.Views.AboutPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    Title="About">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="20" Spacing="16">
+            <Label Text="About GameVault" FontSize="30" FontAttributes="Bold" />
+            <Label Text="GameVault is a game collection and discovery app developed by Cameron Hendrikse for .NET MAUI." />
+            <Label Text="Version 0.1" />
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

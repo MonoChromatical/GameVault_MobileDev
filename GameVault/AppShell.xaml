@@ -4,23 +4,34 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:views="clr-namespace:GameVault.Views"
-    Shell.FlyoutBehavior="Flyout"    Shell.NavBarIsVisible="True"
+    Shell.FlyoutBehavior="Flyout"
+    Shell.NavBarIsVisible="True"
     Title="GameVault">
+
     <!--
         FLOW:
         AppShell.xaml defines the flyout menu.
         Each FlyoutItem opens one main page of the app.
         The page objects are created through MAUI dependency injection.
-    -->    <FlyoutItem Title="Home" Route="home">
+    -->
+    <FlyoutItem Title="Home" Route="home">
         <ShellContent ContentTemplate="{DataTemplate views:HomePage}" />
     </FlyoutItem>
+
     <FlyoutItem Title="Discover Games" Route="discover">
         <ShellContent ContentTemplate="{DataTemplate views:DiscoverPage}" />
     </FlyoutItem>
+
     <FlyoutItem Title="Profile / Library" Route="library">
         <ShellContent ContentTemplate="{DataTemplate views:LibraryPage}" />
     </FlyoutItem>
+
     <FlyoutItem Title="Settings" Route="settings">
         <ShellContent ContentTemplate="{DataTemplate views:SettingsPage}" />
     </FlyoutItem>
+
+    <FlyoutItem Title="About" Route="about">
+        <ShellContent ContentTemplate="{DataTemplate views:AboutPage}" />
+    </FlyoutItem>
+
 </Shell>

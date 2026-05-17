@@ -24,6 +24,7 @@ namespace GameVault
             builder.Services.AddTransient<GameDetailsPage>();
             builder.Services.AddTransient<LibraryPage>();
             builder.Services.AddTransient<SettingsPage>();
+            builder.Services.AddTransient<AboutPage>();
 
             builder.Services.AddSingleton<SelectedGameService>();
             builder.Services.AddSingleton<SavedGameDatabaseService>();
