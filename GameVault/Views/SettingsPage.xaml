@@ -9,20 +9,32 @@
         <VerticalStackLayout Padding="20" Spacing="18">
             <Label Text="Settings" FontSize="30" FontAttributes="Bold" />
 
+            <!--
+            FLOW:
+            This switch changes whether adult games are allowed.
+            SettingsPage.xaml.cs saves the value in UserSettings.
+            RawgGameService reads UserSettings before showing API games.
+        -->
             <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
                 <Label Text="Show Adult Content" VerticalOptions="Center" />
                 <Switch
-                    x:Name="AdultContentSwitch"
-                    Grid.Column="1"
-                    Toggled="AdultContentSwitch_Toggled" />
+                x:Name="AdultContentSwitch"
+                Grid.Column="1"
+                Toggled="AdultContentSwitch_Toggled" />
             </Grid>
 
+            <!--
+            FLOW:
+            This switch changes the portrait lock setting.
+            SettingsPage.xaml.cs saves the value in UserSettings.
+            OrientationService locks portrait mode or allows normal rotation.
+        -->
             <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
                 <Label Text="Lock Portrait View" VerticalOptions="Center" />
                 <Switch
-                    x:Name="PortraitLockSwitch"
-                    Grid.Column="1"
-                    Toggled="PortraitLockSwitch_Toggled" />
+                x:Name="PortraitLockSwitch"
+                Grid.Column="1"
+                Toggled="PortraitLockSwitch_Toggled" />
             </Grid>
 
             <Label x:Name="SettingsOutputLabel" Text="Settings loaded." />

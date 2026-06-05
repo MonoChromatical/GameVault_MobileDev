@@ -16,7 +16,6 @@ namespace GameVault.Services
     {
         private readonly HttpClient httpClient = new HttpClient();
 
-
         private readonly JsonSerializerOptions jsonOptions = new JsonSerializerOptions
         {
             PropertyNameCaseInsensitive = true
