@@ -5,18 +5,103 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     Title="Discover Games">
 
+    <!-- =========================================================
+         ORIENTATION VISUAL DESIGN CHANGE
+         These resources control how the Discover page changes
+         between portrait and landscape.
+         Portrait = search controls stacked above results.
+         Landscape = search controls on the left, results on the right.
+         ========================================================= -->
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <Style TargetType="Grid" x:Key="DiscoverGridOrientationStyle">
+                <Setter Property="VisualStateManager.VisualStateGroups">
+                    <VisualStateGroupList>
+                        <VisualStateGroup>
+                            <!-- Portrait state: vertical one-column search and results layout. -->
+                            <VisualState x:Name="Portrait">
+                                <VisualState.StateTriggers>
+                                    <OrientationStateTrigger Orientation="Portrait" />
+                                </VisualState.StateTriggers>
+                                <VisualState.Setters>
+                                    <Setter Property="RowDefinitions" Value="Auto,Auto,*" />
+                                    <Setter Property="ColumnDefinitions" Value="*" />
+                                </VisualState.Setters>
+                            </VisualState>
+
+                            <!-- Landscape state: horizontal search panel and results panel layout. -->
+                            <VisualState x:Name="Landscape">
+                                <VisualState.StateTriggers>
+                                    <OrientationStateTrigger Orientation="Landscape" />
+                                </VisualState.StateTriggers>
+                                <VisualState.Setters>
+                                    <Setter Property="RowDefinitions" Value="Auto,*" />
+                                    <Setter Property="ColumnDefinitions" Value="320,*" />
+                                </VisualState.Setters>
+                            </VisualState>
+                        </VisualStateGroup>
+                    </VisualStateGroupList>
+                </Setter>
+            </Style>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <!-- =====================================================
+         ORIENTATION LAYOUT CONTAINER
+         This Grid applies DiscoverGridOrientationStyle.
+         Portrait stacks the search tools above the results.
+         Landscape places the search tools beside the results.
+         ===================================================== -->
     <Grid
         Padding="20"
-        RowDefinitions="Auto,Auto,*"
-        ColumnDefinitions="*"
         RowSpacing="16"
-        ColumnSpacing="18">
+        ColumnSpacing="18"
+        Style="{StaticResource DiscoverGridOrientationStyle}">
 
         <VerticalStackLayout Grid.Row="0" Grid.Column="0" Spacing="16">
+            <!--
+                ORIENTATION POSITION CHANGE:
+                In portrait, the search controls sit at the top.
+                In landscape, the search controls become a left-side panel.
+            -->
+            <VisualStateManager.VisualStateGroups>
+                <VisualStateGroupList>
+                    <VisualStateGroup>
+                        <VisualState x:Name="Portrait">
+                            <VisualState.StateTriggers>
+                                <OrientationStateTrigger Orientation="Portrait" />
+                            </VisualState.StateTriggers>
+                            <VisualState.Setters>
+                                <Setter Property="Grid.Row" Value="0" />
+                                <Setter Property="Grid.Column" Value="0" />
+                                <Setter Property="Grid.RowSpan" Value="1" />
+                            </VisualState.Setters>
+                        </VisualState>
+
+                        <VisualState x:Name="Landscape">
+                            <VisualState.StateTriggers>
+                                <OrientationStateTrigger Orientation="Landscape" />
+                            </VisualState.StateTriggers>
+                            <VisualState.Setters>
+                                <Setter Property="Grid.Row" Value="0" />
+                                <Setter Property="Grid.Column" Value="0" />
+                                <Setter Property="Grid.RowSpan" Value="2" />
+                            </VisualState.Setters>
+                        </VisualState>
+                    </VisualStateGroup>
+                </VisualStateGroupList>
+            </VisualStateManager.VisualStateGroups>
+
             <Label Text="Discover Games" FontSize="30" FontAttributes="Bold" />
 
             <SearchBar Placeholder="Search for a game..." Text="{Binding SearchText}" />
 
+            <!--
+                FLOW:
+                DiscoverViewModel loads GenreOptions and PlatformOptions from RAWG.
+                ItemDisplayBinding shows the option Name to the user.
+                SelectedItem stores the selected FilterOption in the ViewModel.
+            -->
             <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
                 <Picker
                     Title="Genre"
@@ -41,17 +126,77 @@
             Grid.Column="0"
             Text="Results"
             FontSize="24"
-            FontAttributes="Bold" />
+            FontAttributes="Bold">
+            <!-- Moves the Results heading to the right side in landscape. -->
+            <VisualStateManager.VisualStateGroups>
+                <VisualStateGroupList>
+                    <VisualStateGroup>
+                        <VisualState x:Name="Portrait">
+                            <VisualState.StateTriggers>
+                                <OrientationStateTrigger Orientation="Portrait" />
+                            </VisualState.StateTriggers>
+                            <VisualState.Setters>
+                                <Setter Property="Grid.Row" Value="1" />
+                                <Setter Property="Grid.Column" Value="0" />
+                            </VisualState.Setters>
+                        </VisualState>
 
-        <CollectionView
-            Grid.Row="2"
-            Grid.Column="0"
-            ItemsSource="{Binding FilteredGames}">
+                        <VisualState x:Name="Landscape">
+                            <VisualState.StateTriggers>
+                                <OrientationStateTrigger Orientation="Landscape" />
+                            </VisualState.StateTriggers>
+                            <VisualState.Setters>
+                                <Setter Property="Grid.Row" Value="0" />
+                                <Setter Property="Grid.Column" Value="1" />
+                            </VisualState.Setters>
+                        </VisualState>
+                    </VisualStateGroup>
+                </VisualStateGroupList>
+            </VisualStateManager.VisualStateGroups>
+        </Label>
+
+        <!--
+            FLOW:
+            DiscoverViewModel.FilteredGames contains the current search results.
+            CollectionView repeats this template once for each Game object.
+        -->
+        <CollectionView Grid.Row="2" Grid.Column="0" ItemsSource="{Binding FilteredGames}">
+            <!--
+                ORIENTATION SCROLL WINDOW:
+                The results list scrolls inside its own area.
+                In landscape, it stays aligned beside the search controls.
+            -->
+            <VisualStateManager.VisualStateGroups>
+                <VisualStateGroupList>
+                    <VisualStateGroup>
+                        <VisualState x:Name="Portrait">
+                            <VisualState.StateTriggers>
+                                <OrientationStateTrigger Orientation="Portrait" />
+                            </VisualState.StateTriggers>
+                            <VisualState.Setters>
+                                <Setter Property="Grid.Row" Value="2" />
+                                <Setter Property="Grid.Column" Value="0" />
+                            </VisualState.Setters>
+                        </VisualState>
+
+                        <VisualState x:Name="Landscape">
+                            <VisualState.StateTriggers>
+                                <OrientationStateTrigger Orientation="Landscape" />
+                            </VisualState.StateTriggers>
+                            <VisualState.Setters>
+                                <Setter Property="Grid.Row" Value="1" />
+                                <Setter Property="Grid.Column" Value="1" />
+                            </VisualState.Setters>
+                        </VisualState>
+                    </VisualStateGroup>
+                </VisualStateGroupList>
+            </VisualStateManager.VisualStateGroups>
+
             <CollectionView.ItemTemplate>
                 <DataTemplate>
                     <Border Padding="10" Margin="0,0,0,10">
                         <Border.GestureRecognizers>
-                            <TapGestureRecognizer Tapped="GameCard_Tapped" />
+                            <TapGestureRecognizer Tapped="GameCard_Tapped"/>
                         </Border.GestureRecognizers>
                         <VerticalStackLayout>
                             <Label Text="{Binding Title}" FontAttributes="Bold" />
