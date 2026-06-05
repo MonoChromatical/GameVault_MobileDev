@@ -5,25 +5,148 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     Title="Game Details">
 
+    <!-- =========================================================
+         ORIENTATION VISUAL DESIGN CHANGE
+         These resources control how the Game Details page changes
+         between portrait and landscape.
+         Portrait = all details and controls stacked vertically.
+         Landscape = game details on the left, library controls on the right.
+         ========================================================= -->
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <Style TargetType="Grid" x:Key="GameDetailsGridOrientationStyle">
+                <Setter Property="VisualStateManager.VisualStateGroups">
+                    <VisualStateGroupList>
+                        <VisualStateGroup>
+                            <!-- Portrait state: vertical one-column details layout. -->
+                            <VisualState x:Name="Portrait">
+                                <VisualState.StateTriggers>
+                                    <OrientationStateTrigger Orientation="Portrait" />
+                                </VisualState.StateTriggers>
+                                <VisualState.Setters>
+                                    <Setter Property="RowDefinitions" Value="Auto,Auto,Auto" />
+                                    <Setter Property="ColumnDefinitions" Value="*" />
+                                </VisualState.Setters>
+                            </VisualState>
+
+                            <!-- Landscape state: horizontal two-column details layout. -->
+                            <VisualState x:Name="Landscape">
+                                <VisualState.StateTriggers>
+                                    <OrientationStateTrigger Orientation="Landscape" />
+                                </VisualState.StateTriggers>
+                                <VisualState.Setters>
+                                    <Setter Property="RowDefinitions" Value="Auto,*" />
+                                    <Setter Property="ColumnDefinitions" Value="*,320" />
+                                </VisualState.Setters>
+                            </VisualState>
+                        </VisualStateGroup>
+                    </VisualStateGroupList>
+                </Setter>
+            </Style>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
     <ScrollView>
+
+        <!-- =====================================================
+             ORIENTATION LAYOUT CONTAINER
+             This Grid applies GameDetailsGridOrientationStyle.
+             Portrait stacks all detail sections vertically.
+             Landscape splits information and library controls.
+             ===================================================== -->
         <Grid
             Padding="20"
-            RowDefinitions="Auto,Auto,Auto"
-            ColumnDefinitions="*"
             RowSpacing="16"
-            ColumnSpacing="18">
+            ColumnSpacing="18"
+            Style="{StaticResource GameDetailsGridOrientationStyle}">
 
             <VerticalStackLayout Grid.Row="0" Grid.Column="0" Spacing="16">
+                <!--
+                    ORIENTATION POSITION CHANGE:
+                    In portrait, this section sits above the library controls.
+                    In landscape, this section becomes the left-side details panel.
+                -->
+                <VisualStateManager.VisualStateGroups>
+                    <VisualStateGroupList>
+                        <VisualStateGroup>
+                            <VisualState x:Name="Portrait">
+                                <VisualState.StateTriggers>
+                                    <OrientationStateTrigger Orientation="Portrait" />
+                                </VisualState.StateTriggers>
+                                <VisualState.Setters>
+                                    <Setter Property="Grid.Row" Value="0" />
+                                    <Setter Property="Grid.Column" Value="0" />
+                                </VisualState.Setters>
+                            </VisualState>
+
+                            <VisualState x:Name="Landscape">
+                                <VisualState.StateTriggers>
+                                    <OrientationStateTrigger Orientation="Landscape" />
+                                </VisualState.StateTriggers>
+                                <VisualState.Setters>
+                                    <Setter Property="Grid.Row" Value="0" />
+                                    <Setter Property="Grid.Column" Value="0" />
+                                    <Setter Property="Grid.RowSpan" Value="2" />
+                                </VisualState.Setters>
+                            </VisualState>
+                        </VisualStateGroup>
+                    </VisualStateGroupList>
+                </VisualStateManager.VisualStateGroups>
+
+                <!--
+                    FLOW:
+                    GameDetailsPage.xaml reads SelectedGame from GameDetailsPage.xaml.cs.
+                    SelectedGame came from SelectedGameService.
+                    These Labels display the selected Game object.
+                -->
                 <Label Text="{Binding SelectedGame.Title}" FontSize="30" FontAttributes="Bold" />
                 <Label Text="{Binding SelectedGame.Genre}" />
                 <Label Text="{Binding SelectedGame.Platform}" />
                 <Label Text="{Binding SelectedGame.Rating, StringFormat='Rating: {0}/5'}" />
 
                 <Label Text="About This Game" FontSize="24" FontAttributes="Bold" />
+
+                <!--
+                    FLOW:
+                    GameDetailsPage.xaml displays SelectedGame.Description.
+                    GameDetailsPage.xaml.cs loads this description from RAWG when the page opens.
+                -->
                 <Label Text="{Binding SelectedGame.Description}" />
             </VerticalStackLayout>
 
             <VerticalStackLayout Grid.Row="1" Grid.Column="0" Spacing="16">
+                <!--
+                    ORIENTATION POSITION CHANGE:
+                    In portrait, the library controls sit under the game details.
+                    In landscape, they move to the right-side control panel.
+                -->
+                <VisualStateManager.VisualStateGroups>
+                    <VisualStateGroupList>
+                        <VisualStateGroup>
+                            <VisualState x:Name="Portrait">
+                                <VisualState.StateTriggers>
+                                    <OrientationStateTrigger Orientation="Portrait" />
+                                </VisualState.StateTriggers>
+                                <VisualState.Setters>
+                                    <Setter Property="Grid.Row" Value="1" />
+                                    <Setter Property="Grid.Column" Value="0" />
+                                </VisualState.Setters>
+                            </VisualState>
+
+                            <VisualState x:Name="Landscape">
+                                <VisualState.StateTriggers>
+                                    <OrientationStateTrigger Orientation="Landscape" />
+                                </VisualState.StateTriggers>
+                                <VisualState.Setters>
+                                    <Setter Property="Grid.Row" Value="0" />
+                                    <Setter Property="Grid.Column" Value="1" />
+                                    <Setter Property="Grid.RowSpan" Value="2" />
+                                </VisualState.Setters>
+                            </VisualState>
+                        </VisualStateGroup>
+                    </VisualStateGroupList>
+                </VisualStateManager.VisualStateGroups>
+
                 <Button Text="Add To Library" Clicked="AddToLibrary_Clicked" />
 
                 <Label Text="Status" FontSize="24" FontAttributes="Bold" />
@@ -45,6 +168,9 @@
 
                 <Label x:Name="SaveOutputLabel" Text="" />
             </VerticalStackLayout>
+
         </Grid>
+
     </ScrollView>
+
 </ContentPage>
