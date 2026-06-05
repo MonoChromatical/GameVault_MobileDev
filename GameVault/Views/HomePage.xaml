@@ -5,25 +5,112 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     Title="Home">
 
+    <!-- =========================================================
+         ORIENTATION VISUAL DESIGN CHANGE
+         These resources define how the Home page layout changes
+         when the app moves between portrait and landscape.
+         Portrait uses a vertical one-column layout.
+         Landscape uses a horizontal two-column layout.
+         ========================================================= -->
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+
+            <Style TargetType="Grid" x:Key="HomeGridOrientationStyle">
+                <Setter Property="VisualStateManager.VisualStateGroups">
+                    <VisualStateGroupList>
+                        <VisualStateGroup>
+                            <!-- Portrait state: stacks the page content vertically in one column. -->
+                            <VisualState x:Name="Portrait">
+                                <VisualState.StateTriggers>
+                                    <OrientationStateTrigger Orientation="Portrait" />
+                                </VisualState.StateTriggers>
+                                <VisualState.Setters>
+                                    <Setter Property="RowDefinitions" Value="Auto,Auto,Auto,Auto,Auto" />
+                                    <Setter Property="ColumnDefinitions" Value="*" />
+                                </VisualState.Setters>
+                            </VisualState>
+                            <!-- Landscape state: changes the page into a wider two-column layout. -->
+                            <VisualState x:Name="Landscape">
+                                <VisualState.StateTriggers>
+                                    <OrientationStateTrigger Orientation="Landscape" />
+                                </VisualState.StateTriggers>
+                                <VisualState.Setters>
+                                    <Setter Property="RowDefinitions" Value="Auto,Auto,*,Auto" />
+                                    <Setter Property="ColumnDefinitions" Value="*,*" />
+                                </VisualState.Setters>
+                            </VisualState>
+                        </VisualStateGroup>
+                    </VisualStateGroupList>
+                </Setter>
+            </Style>
+
+        </ResourceDictionary>
+    </ContentPage.Resources>
     <ScrollView>
+        <!-- =====================================================
+             ORIENTATION LAYOUT CONTAINER
+             This Grid applies HomeGridOrientationStyle.
+             Its rows and columns are changed by the portrait
+             and landscape visual states above.
+             ===================================================== -->
         <Grid
             Padding="20"
-            RowDefinitions="Auto,Auto,Auto,Auto,Auto"
-            ColumnDefinitions="*"
             RowSpacing="22"
-            ColumnSpacing="18">
-
-            <VerticalStackLayout Grid.Row="0" Grid.Column="0" Spacing="6">
+            ColumnSpacing="18"
+            Style="{StaticResource HomeGridOrientationStyle}">
+            <VerticalStackLayout Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Spacing="6">
                 <Label Text="Welcome Back" FontSize="30" FontAttributes="Bold" />
                 <Label Text="Discover your next game." />
             </VerticalStackLayout>
 
             <Border Grid.Row="1" Grid.Column="0" Padding="16">
+                <!--
+                    ORIENTATION POSITION CHANGE:
+                    Portrait keeps the featured game in the normal stacked layout.
+                    Landscape keeps the featured game on the left and lets the
+                    Popular Games heading, list, and button align at the top right.
+                -->
+                <VisualStateManager.VisualStateGroups>
+                    <VisualStateGroupList>
+                        <VisualStateGroup>
+                            <VisualState x:Name="Portrait">
+                                <VisualState.StateTriggers>
+                                    <OrientationStateTrigger Orientation="Portrait" />
+                                </VisualState.StateTriggers>
+                                <VisualState.Setters>
+                                    <Setter Property="Grid.Row" Value="1" />
+                                    <Setter Property="Grid.Column" Value="0" />
+                                    <Setter Property="Grid.RowSpan" Value="1" />
+                                </VisualState.Setters>
+                            </VisualState>
+
+                            <VisualState x:Name="Landscape">
+                                <VisualState.StateTriggers>
+                                    <OrientationStateTrigger Orientation="Landscape" />
+                                </VisualState.StateTriggers>
+                                <VisualState.Setters>
+                                    <Setter Property="Grid.Row" Value="1" />
+                                    <Setter Property="Grid.Column" Value="0" />
+                                    <Setter Property="Grid.RowSpan" Value="3" />
+                                </VisualState.Setters>
+                            </VisualState>
+                        </VisualStateGroup>
+                    </VisualStateGroupList>
+                </VisualStateManager.VisualStateGroups>
                 <Border.StrokeShape>
                     <RoundRectangle CornerRadius="4" />
                 </Border.StrokeShape>
                 <VerticalStackLayout Spacing="12">
                     <Label Text="Featured Game" FontSize="24" FontAttributes="Bold" />
+
+                    <!--
+                        FLOW:
+                        HomePage.xaml reads FeaturedGame from HomeViewModel.
+                        FeaturedGame is a Game object.
+                        These Labels display properties from that Game object.
+                    -->
+                    
                     <Label Text="{Binding FeaturedGame.Title}" FontSize="20" FontAttributes="Bold" />
                     <Label Text="{Binding FeaturedGame.Genre}" />
                     <Label Text="{Binding FeaturedGame.Platform}" />
@@ -37,18 +124,86 @@
                 Grid.Column="0"
                 Text="Popular Games"
                 FontSize="24"
-                FontAttributes="Bold" />
+                FontAttributes="Bold">
+                <!-- Moves the Popular Games heading beside the featured game in landscape. -->
+                <VisualStateManager.VisualStateGroups>
+                    <VisualStateGroupList>
+                        <VisualStateGroup>
+                            <VisualState x:Name="Portrait">
+                                <VisualState.StateTriggers>
+                                    <OrientationStateTrigger Orientation="Portrait" />
+                                </VisualState.StateTriggers>
+                                <VisualState.Setters>
+                                    <Setter Property="Grid.Row" Value="2" />
+                                    <Setter Property="Grid.Column" Value="0" />
+                                </VisualState.Setters>
+                            </VisualState>
+
+                            <VisualState x:Name="Landscape">
+                                <VisualState.StateTriggers>
+                                    <OrientationStateTrigger Orientation="Landscape" />
+                                </VisualState.StateTriggers>
+                                <VisualState.Setters>
+                                    <Setter Property="Grid.Row" Value="1" />
+                                    <Setter Property="Grid.Column" Value="1" />
+                                </VisualState.Setters>
+                            </VisualState>
+                        </VisualStateGroup>
+                    </VisualStateGroupList>
+                </VisualStateManager.VisualStateGroups>
+            </Label>
+
+            <!--
+                FLOW:
+                HomeViewModel.PopularGames contains multiple Game objects.
+                CollectionView repeats this template once for each Game.
+             -->
 
             <CollectionView
                 Grid.Row="3"
                 Grid.Column="0"
+                VerticalOptions="Start"
                 ItemsSource="{Binding PopularGames}">
+                <!--
+                    LANDSCAPE SCROLL WINDOW:
+                    In landscape, the game list is given a fixed height.
+                    This keeps it aligned beside the featured game instead of
+                    stretching the page downward based on the number of games.
+                -->
+                <VisualStateManager.VisualStateGroups>
+                    <VisualStateGroupList>
+                        <VisualStateGroup>
+                            <VisualState x:Name="Portrait">
+                                <VisualState.StateTriggers>
+                                    <OrientationStateTrigger Orientation="Portrait" />
+                                </VisualState.StateTriggers>
+                                <VisualState.Setters>
+                                    <Setter Property="Grid.Row" Value="3" />
+                                    <Setter Property="Grid.Column" Value="0" />
+                                    <Setter Property="HeightRequest" Value="-1" />
+                                </VisualState.Setters>
+                            </VisualState>
+
+                            <VisualState x:Name="Landscape">
+                                <VisualState.StateTriggers>
+                                    <OrientationStateTrigger Orientation="Landscape" />
+                                </VisualState.StateTriggers>
+                                <VisualState.Setters>
+                                    <Setter Property="Grid.Row" Value="2" />
+                                    <Setter Property="Grid.Column" Value="1" />
+                                    <Setter Property="HeightRequest" Value="230" />
+                                </VisualState.Setters>
+                            </VisualState>
+                        </VisualStateGroup>
+                    </VisualStateGroupList>
+                </VisualStateManager.VisualStateGroups>
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
                         <Border Padding="10" Margin="0,0,0,10">
                             <Border.GestureRecognizers>
-                                <TapGestureRecognizer Tapped="GameCard_Tapped" />
+                                <TapGestureRecognizer Tapped="GameCard_Tapped"/>
                             </Border.GestureRecognizers>
+                            
                             <VerticalStackLayout>
                                 <Label Text="{Binding Title}" FontAttributes="Bold" />
                                 <Label Text="{Binding Genre}" />
@@ -59,11 +214,34 @@
                 </CollectionView.ItemTemplate>
             </CollectionView>
 
-            <Button
-                Grid.Row="4"
-                Grid.Column="0"
-                Text="Browse Games"
-                Clicked="BrowseGames_Clicked" />
+            <Button Grid.Row="4" Grid.Column="0" Text="Browse Games" Clicked="BrowseGames_Clicked">
+                <!-- Moves the Browse Games button under the landscape results column. -->
+                <VisualStateManager.VisualStateGroups>
+                    <VisualStateGroupList>
+                        <VisualStateGroup>
+                            <VisualState x:Name="Portrait">
+                                <VisualState.StateTriggers>
+                                    <OrientationStateTrigger Orientation="Portrait" />
+                                </VisualState.StateTriggers>
+                                <VisualState.Setters>
+                                    <Setter Property="Grid.Row" Value="4" />
+                                    <Setter Property="Grid.Column" Value="0" />
+                                </VisualState.Setters>
+                            </VisualState>
+
+                            <VisualState x:Name="Landscape">
+                                <VisualState.StateTriggers>
+                                    <OrientationStateTrigger Orientation="Landscape" />
+                                </VisualState.StateTriggers>
+                                <VisualState.Setters>
+                                    <Setter Property="Grid.Row" Value="3" />
+                                    <Setter Property="Grid.Column" Value="1" />
+                                </VisualState.Setters>
+                            </VisualState>
+                        </VisualStateGroup>
+                    </VisualStateGroupList>
+                </VisualStateManager.VisualStateGroups>
+            </Button>
         </Grid>
     </ScrollView>
 </ContentPage>
