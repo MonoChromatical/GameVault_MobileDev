@@ -15,6 +15,10 @@ namespace GameVault.Models
         [PrimaryKey, AutoIncrement]
         public new int Id { get; set; }
 
+        // Stores the original RAWG/API game id so we can stop duplicate saves.
+        [Unique]
+        public int ApiGameId { get; set; }
+
         // Status stores the user's progress for this game.
         public string Status { get; set; } = "Playing";
 
@@ -23,5 +27,6 @@ namespace GameVault.Models
 
         // IsFavourite lets the library screen show favourite games later.
         public bool IsFavourite { get; set; }
+
     }
 }

@@ -90,6 +90,7 @@ namespace GameVault.Views
 
             // Save a local copy of the selected game plus the user's library choices.
             SavedGame savedGame = new SavedGame();
+            savedGame.ApiGameId = SelectedGame.Id;
             savedGame.Title = SelectedGame.Title;
             savedGame.Genre = SelectedGame.Genre;
             savedGame.Platform = SelectedGame.Platform;
@@ -103,9 +104,17 @@ namespace GameVault.Views
             // The user's status, rating, and favourite choice are stored with the game.
             // SavedGameDatabaseService writes the object to SQLite.
             // LibraryPage reloads the database when the user opens the Library page.
-            await savedGameDatabaseService.SaveGameAsync(savedGame);
 
-            SaveOutputLabel.Text = "Game saved to library";
+            int rowsAdded = await savedGameDatabaseService.SaveGameAsync(savedGame);
+
+            if (rowsAdded == 0)
+            {
+                SaveOutputLabel.Text = "Game is already in your library";
+            }
+            else
+            {
+                SaveOutputLabel.Text = "Game saved to library";
+            }
         }
 
         private void RatingSlider_ValueChanged(object? sender, ValueChangedEventArgs e)

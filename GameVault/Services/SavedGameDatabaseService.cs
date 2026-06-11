@@ -45,7 +45,18 @@ namespace GameVault.Services
             // SQLite inserts that SavedGame into the local database.
             // LibraryPage reloads the saved rows when it appears.
             await InitialiseAsync();
-            return await database!.InsertAsync(savedGame);
+            
+
+            SavedGame? existingGame = await database!.Table<SavedGame>()
+                .Where(game => game.ApiGameId == savedGame.ApiGameId)
+                .FirstOrDefaultAsync();
+
+            if (existingGame != null)
+            {
+                return 0;
+            }
+
+            return await database.InsertAsync(savedGame);
         }
     }
 }
