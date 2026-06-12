@@ -66,5 +66,12 @@ namespace GameVault.Services
             return await database!.DeleteAsync(savedGame);
         }
 
+        public async Task<int> UpdateGameAsync(SavedGame savedGame)
+        {
+            await InitialiseAsync();
+
+            return await database!.UpdateAsync(savedGame);
+        }
+
     }
 }

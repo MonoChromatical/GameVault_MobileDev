@@ -49,7 +49,17 @@ namespace GameVault.Views
             // Refresh SelectedGame bindings each time the page appears.
             OnPropertyChanged(nameof(SelectedGame));
 
-            RemoveFromLibraryButton.IsVisible = SelectedGame is SavedGame;
+            bool isSavedGame = SelectedGame is SavedGame;
+
+            RemoveFromLibraryButton.IsVisible = isSavedGame;
+            UpdateLibraryButton.IsVisible = isSavedGame;
+            AddToLibraryButton.IsVisible = isSavedGame == false;
+
+            if (SelectedGame is SavedGame savedGame)
+            {
+                StatusPicker.SelectedItem = savedGame.Status;
+                RatingSlider.Value = savedGame.PersonalRating;
+            }
         }
 
         private async void RemoveFromLibrary_Clicked(object? sender, EventArgs e)
@@ -141,6 +151,29 @@ namespace GameVault.Views
             {
                 SaveOutputLabel.Text = "Game saved to library";
             }
+        }
+
+        private async void UpdateLibrary_Clicked(object? sender, EventArgs e)
+        {
+            if (SelectedGame is not SavedGame savedGame)
+            {
+                SaveOutputLabel.Text = "This game is not in your library.";
+                return;
+            }
+
+            string status = "Playing";
+
+            if (StatusPicker.SelectedItem != null)
+            {
+                status = StatusPicker.SelectedItem.ToString() ?? "Playing";
+            }
+
+            savedGame.Status = status;
+            savedGame.PersonalRating = RatingSlider.Value;
+
+            await savedGameDatabaseService.UpdateGameAsync(savedGame);
+
+            SaveOutputLabel.Text = "Library entry updated";
         }
 
         private void RatingSlider_ValueChanged(object? sender, ValueChangedEventArgs e)
