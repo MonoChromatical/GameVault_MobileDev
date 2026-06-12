@@ -134,7 +134,7 @@ namespace GameVault.Views
             savedGame.Rating = SelectedGame.Rating;
             savedGame.Description = SelectedGame.Description;
             savedGame.Status = status;
-            savedGame.PersonalRating = RatingSlider.Value;
+            savedGame.PersonalRating = Math.Round(RatingSlider.Value);
 
             // FLOW:
             // The user's status, rating, and favourite choice are stored with the game.
@@ -169,7 +169,7 @@ namespace GameVault.Views
             }
 
             savedGame.Status = status;
-            savedGame.PersonalRating = RatingSlider.Value;
+            savedGame.PersonalRating = Math.Round(RatingSlider.Value);
 
             await savedGameDatabaseService.UpdateGameAsync(savedGame);
 
@@ -178,7 +178,10 @@ namespace GameVault.Views
 
         private void RatingSlider_ValueChanged(object? sender, ValueChangedEventArgs e)
         {
-            RatingOutputLabel.Text = $"Rating: {e.NewValue:0}/10";
+            double roundedRating = Math.Round(e.NewValue);
+
+            RatingSlider.Value = roundedRating;
+            RatingOutputLabel.Text = $"Rating: {roundedRating:0}/10";
         }
     }
 }
