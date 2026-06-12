@@ -5,8 +5,8 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     Title="Profile / Library">
 
-    <ScrollView>
-        <VerticalStackLayout Padding="20" Spacing="18">
+    <Grid Padding="20" RowSpacing="18" RowDefinitions="Auto,*">
+        <VerticalStackLayout Grid.Row="0" Spacing="18">
             <Label Text="My Profile" FontSize="30" FontAttributes="Bold" />
 
             <Border Padding="14">
@@ -34,28 +34,28 @@
             </Grid>
             <Label Text="Recent Library Updates" FontSize="24" FontAttributes="Bold" />
             <Label Text="{Binding Message}" />
-            <!--
+            </VerticalStackLayout>
+        <!--
                 FLOW:
                 LibraryViewModel.SavedGames contains SavedGame objects loaded from SQLite.
                 CollectionView repeats this template once for each saved game.
             -->
-            <CollectionView ItemsSource="{Binding SavedGames}">
-                <CollectionView.ItemTemplate>
-                    <DataTemplate>
-                        <Border Padding="10" Margin="0,0,0,10">
-                            <Border.GestureRecognizers>
-                                <TapGestureRecognizer Tapped="GameCard_Tapped" />
-                            </Border.GestureRecognizers>
-                            <VerticalStackLayout>
-                                <Label Text="{Binding Title}" FontAttributes="Bold" />
-                                <Label Text="{Binding Status}" />
-                                <Label Text="{Binding Platform}" />
-                                <Label Text="{Binding PersonalRating, StringFormat='Your Rating: {0}/10'}" />
-                            </VerticalStackLayout>
-                        </Border>
-                    </DataTemplate>
-                </CollectionView.ItemTemplate>
-            </CollectionView>
-        </VerticalStackLayout>
-    </ScrollView>
+        <CollectionView Grid.Row="1" ItemsSource="{Binding SavedGames}">
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Border Padding="10" Margin="0,0,0,10">
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="GameCard_Tapped" />
+                        </Border.GestureRecognizers>
+                        <VerticalStackLayout>
+                            <Label Text="{Binding Title}" FontAttributes="Bold" />
+                            <Label Text="{Binding Status}" />
+                            <Label Text="{Binding Platform}" />
+                            <Label Text="{Binding PersonalRating, StringFormat='Your Rating: {0}/10'}" />
+                        </VerticalStackLayout>
+                    </Border>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+    </Grid>
 </ContentPage>
