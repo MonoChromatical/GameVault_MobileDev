@@ -27,7 +27,9 @@ namespace GameVault.Services
         {
             "adult",
             "hentai",
-            "sexual"
+            "sexual",
+            "nsfw",
+            "18+ adults Only"
         };
 
         public RawgGameService()
@@ -63,10 +65,10 @@ namespace GameVault.Services
 
                 foreach (RawgGame rawgGame in response.Results)
                 {
-                    Game game = ConvertRawgGame(rawgGame);
                     
-                    if (ShouldShowGame(game) == true)
+                    if (ShouldShowGame(rawgGame) == true)
                     {
+                        Game game = ConvertRawgGame(rawgGame);
                         games.Add(game);
                     }
                 }
@@ -126,10 +128,10 @@ namespace GameVault.Services
 
                 foreach (RawgGame rawgGame in response.Results)
                 {
-                    Game game = ConvertRawgGame(rawgGame);
 
-                    if (ShouldShowGame(game) == true)
+                    if (ShouldShowGame(rawgGame) == true)
                     {
+                        Game game = ConvertRawgGame(rawgGame);
                         games.Add(game);
                     }
                 }
@@ -288,15 +290,28 @@ namespace GameVault.Services
             return game;
         }
 
-        private bool ShouldShowGame(Game game)
+        private bool ShouldShowGame(RawgGame rawgGame)
         {
             if (UserSettings.ShowAdultContent == true)
             {
                 return true;
             }
 
-            string filterText = game.Title + " " + game.Genre;
+            string filterText =
+                (rawgGame.Name ?? string.Empty) + " " +
+                GetGenreText(rawgGame) + " " +
+                (rawgGame.EsrbRating?.Name ?? string.Empty) + " " +
+                (rawgGame.EsrbRating?.Slug ?? string.Empty);
 
+            if (rawgGame.Tags != null)
+            {
+                foreach (RawgTag tag in rawgGame.Tags)
+                {
+                    filterText = filterText + " " + (tag.Name ?? string.Empty);
+                    filterText = filterText + " " + (tag.Slug ?? string.Empty);
+                }
+            }
+            
             foreach (string keyword in adultFilterKeywords)
             {
                 if (filterText.Contains(keyword, StringComparison.OrdinalIgnoreCase))
@@ -453,6 +468,12 @@ namespace GameVault.Services
 
             [JsonPropertyName("platforms")]
             public List<RawgPlatformInfo>? Platforms { get; set; }
+
+            [JsonPropertyName("esrb_rating")]
+            public RawgEsrbRating? EsrbRating { get; set; }
+
+            [JsonPropertyName("tags")]
+            public List<RawgTag>? Tags { get; set; }
         }
 
         private class RawgNamedItem
@@ -471,6 +492,24 @@ namespace GameVault.Services
         {
             [JsonPropertyName("results")]
             public List<RawgFilterItem>? Results { get; set; }
+        }
+
+        private class RawgEsrbRating
+        {
+            [JsonPropertyName("name")]
+            public string? Name { get; set; }
+
+            [JsonPropertyName("slug")]
+            public string? Slug { get; set; }
+        }
+
+        private class RawgTag
+        {
+            [JsonPropertyName("name")]
+            public string? Name { get; set; }
+
+            [JsonPropertyName("slug")]
+            public string? Slug { get; set; }
         }
 
         private class RawgFilterItem
