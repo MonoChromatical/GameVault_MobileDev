@@ -48,6 +48,23 @@ namespace GameVault.Views
 
             // Refresh SelectedGame bindings each time the page appears.
             OnPropertyChanged(nameof(SelectedGame));
+
+            RemoveFromLibraryButton.IsVisible = SelectedGame is SavedGame;
+        }
+
+        private async void RemoveFromLibrary_Clicked(object? sender, EventArgs e)
+        {
+            if (SelectedGame is not SavedGame savedGame)
+            {
+                SaveOutputLabel.Text = "This game is not in your library.";
+                return;
+            }
+
+            await savedGameDatabaseService.DeleteGameAsync(savedGame);
+
+            SaveOutputLabel.Text = "Game was removed from library";
+
+            await Shell.Current.GoToAsync("//library");
         }
 
         private async Task LoadDescriptionAsync()

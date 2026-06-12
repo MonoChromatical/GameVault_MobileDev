@@ -148,7 +148,9 @@
                 </VisualStateManager.VisualStateGroups>
 
                 <Button Text="Add To Library" Clicked="AddToLibrary_Clicked" />
-
+                <Button x:Name="RemoveFromLibraryButton" Text="Remove from library"
+                        Clicked="RemoveFromLibrary_Clicked" IsVisible="False" />
+                
                 <Label Text="Status" FontSize="24" FontAttributes="Bold" />
                 <Picker x:Name="StatusPicker" Title="Choose status">
                     <Picker.Items>
