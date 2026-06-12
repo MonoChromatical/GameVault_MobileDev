@@ -90,7 +90,16 @@ namespace GameVault.Views
 
             // Save a local copy of the selected game plus the user's library choices.
             SavedGame savedGame = new SavedGame();
-            savedGame.ApiGameId = SelectedGame.Id;
+
+            if (SelectedGame is SavedGame selectedSavedGame)
+            {
+                savedGame.ApiGameId = selectedSavedGame.ApiGameId;
+            }
+            else
+            {
+                savedGame.ApiGameId = SelectedGame.Id;
+            }
+
             savedGame.Title = SelectedGame.Title;
             savedGame.Genre = SelectedGame.Genre;
             savedGame.Platform = SelectedGame.Platform;
